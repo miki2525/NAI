@@ -2,9 +2,9 @@ package org.nai.utils;
 
 /**
  * Constants used in Washing Maching Fuzzy context
+ *
  * @author Mikołaj Kalata
  * @author Adam Lichy
- *
  */
 public class WashingMachineConstants {
     public final static String DIRTINESS = "dirtinessOfClothes";

@@ -2,9 +2,9 @@ package org.nai.utils.enums;
 
 /**
  * Enum represents names for specific terms
+ *
  * @author Mikołaj Kalata
  * @author Adam Lichy
- *
  */
 public enum Weight {
 
@@ -17,6 +17,7 @@ public enum Weight {
     Weight(String weight) {
         this.weight = weight;
     }
+
     public String getWeight() {
         return weight;
     }

@@ -20,47 +20,133 @@ import java.util.Map;
  */
 public class WashingMachineSetups {
 
-    public final static Map<Dirtiness, Term> dirtinessOfClothesTerms = loadDiritinessTerms();
-    public final static Map<Weight, Term> weightTerms = loadWeightTerms();
-    public final static Map<TypeOfDirt, Term> typeOfDirtTerms = loadTypeOfDirtTerms();
-    public final static Map<WashingTime, Term> washingTimeTerms = loadWashingTimeTerms();
+    private final static Map<Dirtiness, Term> dirtinessOfClothesTerms = loadDiritinessTerms();
+    private final static Map<Weight, Term> weightTerms = loadWeightTerms();
+    private final static Map<TypeOfDirt, Term> typeOfDirtTerms = loadTypeOfDirtTerms();
+    private final static Map<WashingTime, Term> washingTimeTerms = loadWashingTimeTerms();
+    private final Variable dirtinessOfClothesInput;
+    private final Variable weightOfClothesInput;
+    private final Variable typeOfDirtInput;
+    private final Variable washingTimeOutput;
+    private final FLC washingMachineFLC;
+
+    /**
+     * Constructor initializing Washing Machine Configuration
+     */
+    public WashingMachineSetups() {
+        this.dirtinessOfClothesInput = loadDirtinessOfClothesInput();
+        this.weightOfClothesInput = loadWeightOfClothesInput();
+        //TODO add typeOfDirt
+        this.typeOfDirtInput = null;
+        this.washingTimeOutput = loadWashingTimeOutput();
+        this.washingMachineFLC = assembleControllerAddingRules();
+    }
+
+    /**
+     * Getter for dirtiness of clothes input
+     * @return Variable dirtiness of clothes
+     */
+    public Variable getDirtinessOfClothesInput() {
+        return dirtinessOfClothesInput;
+    }
+
+    /**
+     * Getter for weight of clothes input
+     * @return Variable weight of clothes
+     */
+    public Variable getWeightOfClothesInput() {
+        return weightOfClothesInput;
+    }
+
+    /**
+     * Getter for type of dirt input
+     * @return Variable type of dirt
+     */
+    public Variable getTypeOfDirtInput() {
+        return typeOfDirtInput;
+    }
+
+    /**
+     * Getter for time washing output
+     * @return Variable time washing
+     */
+    public Variable getWashingTimeOutput() {
+        return washingTimeOutput;
+    }
+
+    /**
+     * Getter for Fuzzy Logic Controller
+     * @return FLC
+     */
+    public FLC getWashingMachineFLC() {
+        return washingMachineFLC;
+    }
+
+    /**
+     * Initialize dirtiness of clothes input
+     * @return Variable dirtiness of clothes
+     */
+    private Variable loadDirtinessOfClothesInput() {
+        return Variable.input(WashingMachineConstants.DIRTINESS,
+                dirtinessOfClothesTerms.get(Dirtiness.SLIGHTLY),
+                dirtinessOfClothesTerms.get(Dirtiness.NORMAL),
+                dirtinessOfClothesTerms.get(Dirtiness.VERY));
+    }
+
+    /**
+     * Initialize weight of clothes input
+     * @return Variable weight of clothes
+     */
+    private Variable loadWeightOfClothesInput() {
+        return Variable.input(WashingMachineConstants.WEIGHT,
+                weightTerms.get(Weight.LIGHT),
+                weightTerms.get(Weight.NORMAL),
+                weightTerms.get(Weight.HEAVY));
+    }
+
+    /**
+     * Initialize washin time output
+     * @return Variable washing time
+     */
+    private Variable loadWashingTimeOutput() {
+        return Variable.output(WashingMachineConstants.WASHING_TIME,
+                washingTimeTerms.get(WashingTime.SHORT),
+                washingTimeTerms.get(WashingTime.MEDIUM),
+                washingTimeTerms.get(WashingTime.LONG));
+    }
 
     /**
      * describes possible output values based on inputs
      *
-     * @param dirtinessIn  - represents diritiness of clothes input
-     * @param weightIn     - represents weight of clothes input
-     * @param typeOfDirtIn - represents type of dirt input
-     * @param timeOut      - represents washing time output
      * @return FLC - fuzzy logic controller
      */
-    public static FLC assembleControllerAddingRules(Variable dirtinessIn, Variable weightIn, Variable typeOfDirtIn, Variable timeOut) {
+    private FLC assembleControllerAddingRules() {
         //TODO expand this by typeofDirtIn variable(uncomment) + more possibilities
         return ControllerBuilder.newBuilder()
 
                 .when()
-                .var(dirtinessIn).is(dirtinessOfClothesTerms.get(Dirtiness.SLIGHTY))
+                .var(dirtinessOfClothesInput).is(dirtinessOfClothesTerms.get(Dirtiness.SLIGHTLY))
                 .and()
-                .var(weightIn).is(weightTerms.get(Weight.LIGHT))
+                .var(weightOfClothesInput).is(weightTerms.get(Weight.LIGHT))
 //                .and().var(typeOfDirtIn).is(typeOfDirtTerms.get(TypeOfDirt))
                 .then()
-                .var(timeOut).is(washingTimeTerms.get(WashingTime.SHORT))
+                .var(washingTimeOutput).is(washingTimeTerms.get(WashingTime.SHORT))
 
                 .when()
-                .var(dirtinessIn).is(dirtinessOfClothesTerms.get(Dirtiness.NORMAL))
+                .var(dirtinessOfClothesInput).is(dirtinessOfClothesTerms.get(Dirtiness.NORMAL))
                 .and()
-                .var(weightIn).is(weightTerms.get(Weight.NORMAL))
+                .var(weightOfClothesInput).is(weightTerms.get(Weight.NORMAL))
 //                .and().var(typeOfDirtIn).is(typeOfDirtTerms.get(TypeOfDirt))
                 .then()
-                .var(timeOut).is(washingTimeTerms.get(WashingTime.MEDIUM))
+                .var(washingTimeOutput).is(washingTimeTerms.get(WashingTime.MEDIUM))
 
                 .when()
-                .var(dirtinessIn).is(dirtinessOfClothesTerms.get(Dirtiness.VERY))
+                .var(dirtinessOfClothesInput).is(dirtinessOfClothesTerms.get(Dirtiness.VERY))
                 .and()
-                .var(weightIn).is(weightTerms.get(Weight.HEAVY))
+                .var(weightOfClothesInput).is(weightTerms.get(Weight.HEAVY))
 //                .and().var(typeOfDirtIn).is(typeOfDirtTerms.get(TypeOfDirt))
                 .then()
-                .var(timeOut).is(washingTimeTerms.get(WashingTime.LONG))
+                .var(washingTimeOutput).is(washingTimeTerms.get(WashingTime.LONG))
 
                 .create();
     }
@@ -73,8 +159,8 @@ public class WashingMachineSetups {
      */
     private static Map<Dirtiness, Term> loadDiritinessTerms() {
         Map<Dirtiness, Term> dirtinessTerms = new HashMap<>();
-        dirtinessTerms.put(Dirtiness.SLIGHTY,
-                Term.term(Dirtiness.SLIGHTY.getDirtiness(), 0.0, 0.25, 0.5));
+        dirtinessTerms.put(Dirtiness.SLIGHTLY,
+                Term.term(Dirtiness.SLIGHTLY.getDirtiness(), 0.0, 0.25, 0.5));
         dirtinessTerms.put(Dirtiness.NORMAL,
                 Term.term(Dirtiness.NORMAL.getDirtiness(), 0.25, 0.5, 0.75));
         dirtinessTerms.put(Dirtiness.VERY,
@@ -126,4 +212,5 @@ public class WashingMachineSetups {
                 Term.term(WashingTime.LONG.getTime(), 60.0, 90.0, 120.0));
         return washingTimeTerms;
     }
+
 }

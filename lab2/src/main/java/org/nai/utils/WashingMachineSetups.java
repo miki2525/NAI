@@ -98,7 +98,7 @@ public class WashingMachineSetups {
    */
   private Variable loadTypeOfDirtOnClothesInput() {
     return Variable.input(
-      WashingMachineConstants.DIRTINESS,
+      WashingMachineConstants.TYPE,
       typeOfDirtTerms.get(TypeOfDirt.EASY),
       typeOfDirtTerms.get(TypeOfDirt.NORMAL),
       typeOfDirtTerms.get(TypeOfDirt.DIFICULT)
@@ -137,7 +137,6 @@ public class WashingMachineSetups {
    * @return FLC - fuzzy logic controller
    */
   private FLC assembleControllerAddingRules() {
-    //TODO expand this by typeofDirtIn variable(uncomment) + more possibilities
     return ControllerBuilder
       .newBuilder()
       .when()

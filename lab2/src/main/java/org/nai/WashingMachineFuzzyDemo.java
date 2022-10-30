@@ -40,12 +40,12 @@ public class WashingMachineFuzzyDemo {
 
     //INITIALIZE SAMPLE DATA AND DISPLAY RESULTS
     Map<Variable, Double> sampleInputs = new HashMap<>();
-    // sampleInputs.put(dirtinessOfClothes, 0.25);
-    // sampleInputs.put(weightOfClothes, 3.0);
-    // sampleInputs.put(typeOfDirtOnClothes, 0.5);
-    sampleInputs.put(dirtinessOfClothes, 0.75);
-    sampleInputs.put(weightOfClothes, 9.0);
-    sampleInputs.put(typeOfDirtOnClothes, 0.25);
+    sampleInputs.put(dirtinessOfClothes, 0.25);
+    sampleInputs.put(weightOfClothes, 3.0);
+    sampleInputs.put(typeOfDirtOnClothes, 0.5);
+    // sampleInputs.put(dirtinessOfClothes, 0.75);
+    // sampleInputs.put(weightOfClothes, 9.0);
+    // sampleInputs.put(typeOfDirtOnClothes, 0.25);
     InputInstance instance = InputInstance.wrap(sampleInputs);
     System.out.println("fuzzy = " + flc.applyFuzzy(instance)); //fuzzy = {washingTime=⊕_max([⊗_min([△(0.000000, 15.000000, 30.000000), 1.0])])}
     Map<Variable, Double> crisp = flc.apply(instance);

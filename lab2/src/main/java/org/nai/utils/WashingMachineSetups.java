@@ -85,7 +85,7 @@ public class WashingMachineSetups {
    */
   private Variable loadDirtinessOfClothesInput() {
     return Variable.input(
-      WashingMachineConstants.TYPE,
+      WashingMachineConstants.DIRTINESS,
       dirtinessOfClothesTerms.get(Dirtiness.SLIGHTLY),
       dirtinessOfClothesTerms.get(Dirtiness.NORMAL),
       dirtinessOfClothesTerms.get(Dirtiness.VERY)
@@ -93,8 +93,8 @@ public class WashingMachineSetups {
   }
 
   /**
-   * Initialize dirtiness of clothes input
-   * @return Variable dirtiness of clothes
+   * Initialize type of dirt on clothes input
+   * @return Variable type of dirt on clothes
    */
   private Variable loadTypeOfDirtOnClothesInput() {
     return Variable.input(
@@ -139,6 +139,18 @@ public class WashingMachineSetups {
   private FLC assembleControllerAddingRules() {
     return ControllerBuilder
       .newBuilder()
+      .when()
+      .var(dirtinessOfClothesInput)
+      .is(dirtinessOfClothesTerms.get(Dirtiness.SLIGHTLY))
+      .and()
+      .var(weightOfClothesInput)
+      .is(weightTerms.get(Weight.LIGHT))
+      .and()
+      .var(typeOfDirtInput)
+      .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
+      .then()
+      .var(washingTimeOutput)
+      .is(washingTimeTerms.get(WashingTime.MEDIUM))
       .when()
       .var(dirtinessOfClothesInput)
       .is(dirtinessOfClothesTerms.get(Dirtiness.SLIGHTLY))
@@ -305,15 +317,15 @@ public class WashingMachineSetups {
     Map<TypeOfDirt, Term> typeOfDirtTerms = new HashMap<>();
     typeOfDirtTerms.put(
       TypeOfDirt.EASY,
-      Term.term(TypeOfDirt.EASY.getTypeOfDirt(), 0.0, 0.25, 0.5)
+      Term.term(TypeOfDirt.EASY.getTypeOfDirt(), 0.0, 1.0, 2.0)
     );
     typeOfDirtTerms.put(
       TypeOfDirt.NORMAL,
-      Term.term(TypeOfDirt.NORMAL.getTypeOfDirt(), 0.25, 0.5, 0.75)
+      Term.term(TypeOfDirt.NORMAL.getTypeOfDirt(), 1.0, 2.0, 3.0)
     );
     typeOfDirtTerms.put(
       TypeOfDirt.DIFICULT,
-      Term.term(TypeOfDirt.DIFICULT.getTypeOfDirt(), 0.5, 0.75, 1.0)
+      Term.term(TypeOfDirt.DIFICULT.getTypeOfDirt(), 2.0, 3.0, 4.0)
     );
     return typeOfDirtTerms;
   }
@@ -328,15 +340,15 @@ public class WashingMachineSetups {
     Map<WashingTime, Term> washingTimeTerms = new HashMap<>();
     washingTimeTerms.put(
       WashingTime.SHORT,
-      Term.term(WashingTime.SHORT.getTime(), 0.0, 15.0, 30.0)
+      Term.term(WashingTime.SHORT.getTime(), 0.0, 50.0, 100.0)
     );
     washingTimeTerms.put(
       WashingTime.MEDIUM,
-      Term.term(WashingTime.MEDIUM.getTime(), 30.0, 45.0, 60.0)
+      Term.term(WashingTime.MEDIUM.getTime(), 50.0, 100.0, 150.0)
     );
     washingTimeTerms.put(
       WashingTime.LONG,
-      Term.term(WashingTime.LONG.getTime(), 60.0, 90.0, 120.0)
+      Term.term(WashingTime.LONG.getTime(), 100.0, 150.0, 200.0)
     );
     return washingTimeTerms;
   }

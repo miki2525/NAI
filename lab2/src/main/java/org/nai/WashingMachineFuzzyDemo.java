@@ -42,7 +42,7 @@ public class WashingMachineFuzzyDemo {
     Map<Variable, Double> sampleInputs = new HashMap<>();
     sampleInputs.put(dirtinessOfClothes, 0.25);
     sampleInputs.put(weightOfClothes, 3.0);
-    sampleInputs.put(typeOfDirtOnClothes, 0.5);
+    sampleInputs.put(typeOfDirtOnClothes, 3.0);
     // sampleInputs.put(dirtinessOfClothes, 0.75);
     // sampleInputs.put(weightOfClothes, 9.0);
     // sampleInputs.put(typeOfDirtOnClothes, 0.25);

@@ -18,7 +18,7 @@ import org.nai.utils.enums.Weight;
  * @author Adam Lichy
  */
 public class WashingMachineSetups {
-  private static final Map<Dirtiness, Term> dirtinessOfClothesTerms = loadDiritinessTerms();
+  private static final Map<Dirtiness, Term> dirtinessOfClothesTerms = loadDirtinessTerms();
   private static final Map<Weight, Term> weightTerms = loadWeightTerms();
   private static final Map<TypeOfDirt, Term> typeOfDirtTerms = loadTypeOfDirtTerms();
   private static final Map<WashingTime, Term> washingTimeTerms = loadWashingTimeTerms();
@@ -147,7 +147,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.LIGHT))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.EASY))
       .then()
       .var(washingTimeOutput)
@@ -159,7 +159,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.NORMAL))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.NORMAL))
       .then()
       .var(washingTimeOutput)
@@ -171,7 +171,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.HEAVY))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
       .then()
       .var(washingTimeOutput)
@@ -183,8 +183,8 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.HEAVY))
       .and()
-      .var(typeOfDirtIn)
-      .is(typeOfDirtTerms.get(TypeOfDirt.Easy))
+      .var(typeOfDirtInput)
+      .is(typeOfDirtTerms.get(TypeOfDirt.EASY))
       .then()
       .var(washingTimeOutput)
       .is(washingTimeTerms.get(WashingTime.LONG))
@@ -195,7 +195,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.HEAVY))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
       .then()
       .var(washingTimeOutput)
@@ -207,7 +207,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.LIGHT))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
       .then()
       .var(washingTimeOutput)
@@ -219,7 +219,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.LIGHT))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
       .then()
       .var(washingTimeOutput)
@@ -231,7 +231,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.HEAVY))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.EASY))
       .then()
       .var(washingTimeOutput)
@@ -243,7 +243,7 @@ public class WashingMachineSetups {
       .var(weightOfClothesInput)
       .is(weightTerms.get(Weight.LIGHT))
       .and()
-      .var(typeOfDirtIn)
+      .var(typeOfDirtInput)
       .is(typeOfDirtTerms.get(TypeOfDirt.DIFICULT))
       .then()
       .var(washingTimeOutput)
@@ -257,7 +257,7 @@ public class WashingMachineSetups {
    * @return termsMap for Dirtiness terms
    * unit: %
    */
-  private static Map<Dirtiness, Term> loadDiritinessTerms() {
+  private static Map<Dirtiness, Term> loadDirtinessTerms() {
     Map<Dirtiness, Term> dirtinessTerms = new HashMap<>();
     dirtinessTerms.put(
       Dirtiness.SLIGHTLY,

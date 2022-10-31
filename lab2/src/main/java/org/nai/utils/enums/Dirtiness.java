@@ -7,7 +7,7 @@ package org.nai.utils.enums;
  * @author Adam Lichy
  */
 public enum Dirtiness {
-    SLIGHTLY("slightly"),
+    SLIGHT("slight"),
     NORMAL("normal"),
     VERY("very");
 

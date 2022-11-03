@@ -3,9 +3,11 @@ package org.nai;
 import fuzzy4j.flc.FLC;
 import fuzzy4j.flc.InputInstance;
 import fuzzy4j.flc.Variable;
+import fuzzy4j.sets.FuzzyFunction;
+import org.nai.utils.WashingMachineSetups;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.nai.utils.WashingMachineSetups;
 
 /**
  * Main Class starting app
@@ -13,42 +15,54 @@ import org.nai.utils.WashingMachineSetups;
  * Fuzzy4j source code: <a href="https://github.com/sorend/fuzzy4j">...</a>
  * Initialize WashineMachineSetups to load WashingMachineFuzzy configuration
  *
+ * The application represents Washing Mashine which automaticaly selects best
+ * washing time based on 3 inputs which are dirtinessOfClothes, weightOfClothes
+ * and typeOfDirtOnClothes.
  * @author Mikołaj Kalata
  * @author Adam Lichy
  */
 public class WashingMachineFuzzyDemo {
+    public static void main(String[] args) {
 
-  public static void main(String[] args) {
-    /**
-     * Our application represents Washing Mashine which automaticaly selects best
-     * washing time based on 3 inputs which are dirtinessOfClothes, weightOfClothes
-     * and typeOfDirtOnClothes.
-     */
-    //INITIALIZE CONFIGURATION
-    WashingMachineSetups config = new WashingMachineSetups();
 
-    //INPUTS
-    Variable dirtinessOfClothes = config.getDirtinessOfClothesInput();
-    Variable weightOfClothes = config.getWeightOfClothesInput();
-    Variable typeOfDirtOnClothes = config.getTypeOfDirtInput();
+        //INITIALIZE CONFIGURATION
+        WashingMachineSetups config = new WashingMachineSetups();
 
-    //OUTPUT
-    Variable timeOfWashing = config.getWashingTimeOutput();
+        //INPUTS
+        Variable dirtinessOfClothes = config.getDirtinessOfClothesInput();
+        Variable weightOfClothes = config.getWeightOfClothesInput();
+        Variable typeOfDirt = config.getTypeOfDirtInput();
 
-    //FUZZY CONTROLLER
-    FLC flc = config.getWashingMachineFLC();
+        //OUTPUT
+        Variable timeOfWashing = config.getWashingTimeOutput();
 
-    //INITIALIZE SAMPLE DATA AND DISPLAY RESULTS
-    Map<Variable, Double> sampleInputs = new HashMap<>();
-    sampleInputs.put(dirtinessOfClothes, 0.25);
-    sampleInputs.put(weightOfClothes, 3.0);
-    sampleInputs.put(typeOfDirtOnClothes, 3.0);
-    // sampleInputs.put(dirtinessOfClothes, 0.75);
-    // sampleInputs.put(weightOfClothes, 9.0);
-    // sampleInputs.put(typeOfDirtOnClothes, 0.25);
-    InputInstance instance = InputInstance.wrap(sampleInputs);
-    System.out.println("fuzzy = " + flc.applyFuzzy(instance)); //fuzzy = {washingTime=⊕_max([⊗_min([△(0.000000, 15.000000, 30.000000), 1.0])])}
-    Map<Variable, Double> crisp = flc.apply(instance);
-    System.out.println(crisp.get(timeOfWashing)); //0.6666500000000001
-  }
+        //FUZZY CONTROLLER
+        FLC flc = config.getWashingMachineFLC();
+
+        /**
+         * valid range of values for inputs are configured in terms in WashingMachineSetups
+         * @see WashingMachineSetups#loadDiritinessTerms()
+         * @see WashingMachineSetups#loadWeightTerms()
+         * @see WashingMachineSetups#loadTypeOfDirtTerms()
+         */
+
+        //INITIALIZE SAMPLE DATA AND DISPLAY RESULTS
+        Map<Variable, Double> sampleInputs = new HashMap<>();
+        sampleInputs.put(dirtinessOfClothes, 1.0);
+        sampleInputs.put(weightOfClothes, 4.5);
+        sampleInputs.put(typeOfDirt, 2.0);
+        InputInstance instance = InputInstance.wrap(sampleInputs);
+        Map<Variable, FuzzyFunction> result = flc.applyFuzzy(instance);
+        Map<Variable, Double> crisp = flc.apply(instance);
+        Double washingTimeCrisp = crisp.get(timeOfWashing);
+        int washingTimeResult;
+        try {
+            washingTimeResult = Math.toIntExact(Math.round(washingTimeCrisp));
+        } catch (NullPointerException e) {
+            throw new RuntimeException("Bad inputs");
+        }
+        System.out.println("Sample inputs = " + sampleInputs);
+        System.out.println("Fuzzy = " + result);
+        System.out.println("Washing Time = " + washingTimeResult + " minutes");
+    }
 }

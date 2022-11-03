@@ -7,17 +7,17 @@ package org.nai.utils.enums;
  * @author Adam Lichy
  */
 public enum TypeOfDirt {
-  EASY("easy"),
-  NORMAL("normal"),
-  DIFICULT("dificult");
+    EASY("easy"),
+    NORMAL("normal"),
+    DIFICULT("dificult");
 
-  private final String typeOfDirt;
+    private final String typeOfDirt;
 
-  TypeOfDirt(String typeOfDirt) {
-    this.typeOfDirt = typeOfDirt;
-  }
+    TypeOfDirt(String typeOfDirt) {
+        this.typeOfDirt = typeOfDirt;
+    }
 
-  public String getTypeOfDirt() {
-    return typeOfDirt;
-  }
+    public String getTypeOfDirt() {
+        return typeOfDirt;
+    }
 }

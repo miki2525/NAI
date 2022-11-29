@@ -16,8 +16,13 @@ import org.apache.mahout.common.RandomUtils;
 import org.nai.db.DataLoader;
 import org.nai.db.IDsHolder;
 
+import javax.xml.crypto.Data;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Main Class starting app
@@ -37,21 +42,24 @@ public class Recom {
         RandomUtils.useTestSeed();
         DataModel model = new FileDataModel(csvFile);
         // Building Recommenderbuilder
-        RecommenderBuilder recommenderBuilder = (DataModel model1) -> {
-            // looking for similaryty between users
-            UserSimilarity similarity = new PearsonCorrelationSimilarity(model1);
-            //looking for n closest users to a give user
-            UserNeighborhood neighborhood = new NearestNUserNeighborhood(100, similarity, model1);
-            return new GenericUserBasedRecommender(model1, neighborhood, similarity);
+        RecommenderBuilder recommenderBuilder = new RecommenderBuilder() {
+            public Recommender buildRecommender(DataModel model) throws TasteException {
+                // looking for similaryty between users
+                UserSimilarity similarity = new PearsonCorrelationSimilarity(model);
+                //looking for n closest users to a give user
+                UserNeighborhood neighborhood = new NearestNUserNeighborhood(100, similarity, model);
+                return new GenericUserBasedRecommender(model, neighborhood, similarity);
+            }
         };
 
-        // Recommend certain number of items for a particular user        
+        // Recommend certain number of items for a particular user
+        //!! Here, recommending 5 items to user_id = 2 (tu trzeba zmieni na naszych urzytkowników np Adam Lichy...
         Recommender recommender = recommenderBuilder.buildRecommender(model);
 
-        String user = "Marcin Żmuda-Trzebiatowski";
+        String user = "Adam Lichy";
         int n = 5;
         long id = IDsHolder.getIdForUser(user);
-        List<RecommendedItem> recomendations = recommender.recommend(id, n);
+        List<RecommendedItem> recomendations = recommender.recommend(id, n);//tu nie wiem jak to zrobi zeby u nas userID to było np "Adam Lichy"
         System.out.println("============================");
         System.out.println("Rekomendacje dla usera: " + user);
         System.out.println("Ilość rekomendacji: " + n);

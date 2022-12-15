@@ -1,15 +1,14 @@
 import pandas as pd
-import seaborn as sns
+import tensorflow as tf
+from sklearn.metrics import classification_report,confusion_matrix
 from sklearn.model_selection import train_test_split
-from sklearn import metrics
-import matplotlib.pyplot as plt
-from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
 
 """
 Banknote Authentication Neural Network
 Authors: Adam Lichy, Mikołaj Kalata
-To run program you need to install numpy, matplotlib, and sklearn packages.
-Program shows neural network used for banknote authentication dataset
+To run program you need to install tensorflow, pandas and sklearn packages.
+Program shows neural network (tensorflow) used for banknote authentication dataset
 (https://machinelearningmastery.com/standard-machine-learning-datasets/)
 There are 5 attributes: 
 1. variance of Wavelet Transformed image (continuous)
@@ -22,68 +21,51 @@ There are 5 attributes:
 """
 Load Data
 """
+
 banknote = pd.read_csv("data_banknote_authentication.csv")
 print(banknote.head(5))
-x,y = banknote.drop('class',axis=1), banknote['class']
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.20)
-
-mlp = MLPClassifier(hidden_layer_sizes=(50,), max_iter=10, alpha=1e-4,
-solver='sgd', verbose=10, random_state=1,
-learning_rate_init=.1)
 """
-Fitting data
+Data scaling and converting to data frames.
 """
-mlp.fit(x_train, y_train)
-# """
-# predicted data
-# """
-# y_predict = svm.predict(x_test)
-# """
-# SVM Results
-# """
-# print('Classification Reports:')
-# print(metrics.classification_report(y_test, y_predict))
-# """
-# Accuracy score
-# """
-# print('Accuracy of SVM Algorithm: '
-#       , metrics.accuracy_score(y_test, y_predict)*100)
-#
-# """
-# F1 Score
-# """
-# f1_score_SVM = metrics.f1_score(y_test, y_predict, average='micro')
 
-print("Training set score: %f" % mlp.score(x_train, y_train))
-print("Test set score: %f" % mlp.score(x_test, y_test))
-fig, axes = plt.subplots(4, 4)
-# use global min / max to ensure all weights are shown on the same scale
-vmin, vmax = mlp.coefs_[0].min(), mlp.coefs_[0].max()
-for coef, ax in zip(mlp.coefs_[0].T, axes.ravel()):
-ax.matshow(coef.reshape(28, 28), cmap=plt.cm.gray, vmin=.5 * vmin,
-vmax=.5 * vmax)
-ax.set_xticks(())
-ax.set_yticks(())
-plt.show()
-# """
-# confusion matrix
-# """
-# cm_SVM = metrics.confusion_matrix(y_test, y_predict)
-# cm_log = metrics.confusion_matrix(y_test, y_predict)
-# """
-# recall
-# """
-# recall_SVM = metrics.recall_score(y_test, y_predict)
-# """
-# Heatmap confusion matrix
-# """
-# sns.heatmap(cm_log, annot=True, fmt=".0f", linewidths=3, square=True, cmap='Blues', color="#cd1076")
-# plt.ylabel('actual label')
-# plt.xlabel('predicted label')
-# """
-# show F1 Score and Recall
-# """
-# plt.title(f'F1 Score [SVM Algorithm]: {f1_score_SVM:.2f}\n'
-#           f'Recall [SVM Algorithm]: {recall_SVM:.2f}', size=14, color='black')
-# plt.show()
+Scaler = StandardScaler()
+Scaler.fit(banknote.drop('class',axis =1))
+Scaled_features = Scaler.fit_transform(banknote.drop('class',axis= 1))
+df_features = pd.DataFrame(Scaled_features,columns = banknote.columns[:-1])
+x = df_features
+y = banknote['class']
+
+"""
+Splitting data frames into training and testing datasets.
+"""
+
+x_train , x_test , y_train , y_test = train_test_split(x, y, test_size=0.3)
+
+"""
+Prepare model
+"""
+
+variance = tf.feature_column.numeric_column("variance")
+skewness = tf.feature_column.numeric_column('skewness')
+curtosis = tf.feature_column.numeric_column('curtosis')
+entropy = tf.feature_column.numeric_column('entropy')
+
+feat_cols = [variance,skewness,curtosis,entropy]
+classifier = tf.estimator.DNNClassifier(hidden_units=[10,20,10],n_classes = 2,feature_columns = feat_cols)
+
+input_func = tf.compat.v1.estimator.inputs.pandas_input_fn(x=x_train,y=y_train,batch_size=20,shuffle=True)
+classifier.train(input_fn=input_func,steps = 500)
+
+"""
+Model evaluation
+"""
+
+pred_func = tf.compat.v1.estimator.inputs.pandas_input_fn(x=x_test,batch_size=len(x_test),shuffle= False)
+note_predictions = list(classifier.predict(input_fn=pred_func))
+final_preds  = []
+for pred in note_predictions:
+    final_preds.append(pred['class_ids'][0])
+
+print(confusion_matrix(y_test,final_preds))
+print(classification_report(y_test,final_preds))

@@ -35,7 +35,10 @@ Prepare model ( build + compile)
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape=(28, 28)),
     tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(10)
+    tf.keras.layers.Dense(10),
+    tf.keras.layers.Dense(10),
+    tf.keras.layers.Dense(10),
+    tf.keras.layers.Dense(10),
 ])
 
 model.compile(optimizer='adam',
@@ -54,7 +57,7 @@ Accuracy evaluation
 
 test_loss, test_acc = model.evaluate(test_images,  test_labels, verbose=2)
 
-print('\nTest accuracy:', test_acc)
+print('\nTest accuracy with 5 layers:', test_acc)
 
 """
 Predictions
@@ -75,7 +78,7 @@ def plot_image(i, predictions_array, true_label, img):
 
   predicted_label = np.argmax(predictions_array)
   if predicted_label == true_label:
-    color = 'white'
+    color = 'blue'
   else:
     color = 'red'
 
